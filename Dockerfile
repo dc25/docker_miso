@@ -4,7 +4,11 @@ ARG user
 ARG id
 
 RUN apt-get update && apt-get install -y \
+    bzip2 \
     curl 
+
+COPY build_scripts/install_nix.sh /tmp
+RUN su ${user} -c /tmp/install_nix.sh
 
 COPY build_scripts/install_miso.sh /tmp
 RUN su ${user} -c /tmp/install_miso.sh
