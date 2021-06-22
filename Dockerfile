@@ -1,31 +1,27 @@
-FROM sshd
+FROM devbase
 
-ARG user
-ARG id
+RUN sudo apt-get update 
 
-RUN apt-get update && apt-get install -y \
+RUN sudo apt-get install -y \
     bzip2 \
     curl 
 
-COPY build_scripts/install_nix.sh /tmp
-RUN su ${user} -c /tmp/install_nix.sh
+COPY --chown=$USER build_scripts/install_nix.sh /tmp
+RUN /tmp/install_nix.sh
 
-COPY build_scripts/install_miso.sh /tmp
-RUN su ${user} -c /tmp/install_miso.sh
+COPY --chown=$USER build_scripts/install_miso.sh /tmp
+RUN /tmp/install_miso.sh
 
-RUN apt-get update && apt-get install -y \
-    git 
+COPY --chown=$USER build_scripts/user_installs.sh /tmp
+RUN /tmp/user_installs.sh
 
-COPY build_scripts/user_installs.sh /tmp
-RUN su ${user} -c ./user_installs.sh
+COPY --chown=$USER build_scripts/personalize.sh /tmp
+RUN /tmp/personalize.sh
 
-COPY build_scripts/personalize.sh /tmp
-RUN su ${user} -c ./personalize.sh
+COPY --chown=$USER build_scripts/haskellBashrc /tmp
+RUN cp /tmp/haskellBashrc ~
+RUN echo . ~/haskellBashrc | tee -a ~/.bashrc
 
-COPY build_scripts/haskellBashrc /tmp
-RUN su ${user} -c 'cp /tmp/haskellBashrc ~'
-RUN su ${user} -c 'echo . ~/haskellBashrc | tee -a ~/.bashrc'
-
-COPY build_scripts/haskellVimrc /tmp
-RUN su ${user} -c 'cp /tmp/haskellVimrc ~'
-RUN su ${user} -c "echo so ~/haskellVimrc" | tee -a .vimrc
+COPY --chown=$USER build_scripts/haskellVimrc /tmp
+RUN cp /tmp/haskellVimrc ~
+RUN echo so ~/haskellVimrc | tee -a ~/.vimrc

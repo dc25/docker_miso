@@ -4,7 +4,7 @@ echo "installing nix build system"
 
 sudo apt-get install -y xz-utils
 
-curl curl https://nixos.org/nix/install | sh
+curl -L https://nixos.org/nix/install | sh
 ## curl https://nixos.org/releases/nix/nix-2.1.3/install | sh
 
 . ~/.nix-profile/etc/profile.d/nix.sh
